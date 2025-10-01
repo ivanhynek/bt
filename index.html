@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test z biologie - Generátor testů</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background: linear-gradient(to bottom right, #eff6ff, #e0e7ff);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    .card { 
+      background: white; 
+      border-radius: 16px; 
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); 
+      padding: 32px; 
+      margin-bottom: 24px; 
+    }
+    .card-small { padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    h1 { 
+      font-size: 28px; 
+      font-weight: bold; 
+      color: #1f2937; 
+      margin-bottom: 24px; 
+      text-align: center; 
+    }
+    h2 { font-size: 20px; font-weight: bold; color: #1f2937; margin-bottom: 16px; }
+    .info-box { 
+      background: #eff6ff; 
+      border-radius: 8px; 
+      padding: 16px; 
+      margin-bottom: 24px; 
+    }
+    .info-box p { font-size: 14px; color: #374151; }
+    .form-group { margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    label { 
+      display: block; 
+      font-size: 14px; 
+      font-weight: 500; 
+      color: #374151; 
+      margin-bottom: 4px; 
+    }
+    input[type="text"], input[type="email"], input[type="date"], input[type="number"], textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #d1d5db;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    input[type="number"] { width: 80px; }
+    textarea { 
+      min-height: 80px; 
+      resize: vertical;
+      border-color: #e5e7eb;
+    }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      font-size: 14px;
+    }
+    .btn-primary {
+      background: linear-gradient(to right, #3b82f6, #6366f1);
+      color: white;
+    }
+    .btn-success {
+      background: linear-gradient(to right, #10b981, #059669);
+      color: white;
+      padding: 14px 40px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .btn:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+    }
+    .center { text-align: center; }
+    .flex-center { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 16px; 
+      align-items: center; 
+    }
+    .question-card { 
+      background: white; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
+      padding: 24px; 
+      margin-bottom: 16px;
+    }
+    .question-header { display: flex; gap: 12px; margin-bottom: 12px; }
+    .question-number {
+      background: #3b82f6;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 14px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .question-title { font-size: 18px; font-weight: 600; color: #1f2937; }
+    .question-section { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+    .answer-area { margin-left: 48px; }
+    .answer-label { font-size: 14px; color: #6b7280; margin-bottom: 4px; }
+    .warning {
+      background: #fef3c7;
+      border: 2px solid #fbbf24;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .warning p { color: #92400e; font-size: 14px; }
+    .instruction-box {
+      background: #dbeafe;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .instruction-box p {
+      font-size: 14px;
+      color: #1e40af;
+      line-height: 1.5;
+    }
+    .hidden { display: none; }
+    .bg-decoration {
+      position: absolute;
+      opacity: 0.05;
+      pointer-events: none;
+    }
+    .decoration-1 { top: -50px; right: -50px; }
+    .decoration-2 { bottom: -30px; left: -30px; }
+    .relative { position: relative; }
+    .overflow-hidden { overflow: hidden; }
+    .z-1 { position: relative; z-index: 1; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="relative overflow-hidden">
+        <svg class="bg-decoration decoration-1" width="300" height="300" viewBox="0 0 200 200">
+          <path d="M50,20 Q60,40 50,60 Q40,80 50,100 Q60,120 50,140 Q40,160 50,180" stroke="#3b82f6" stroke-width="4" fill="none"/>
+          <path d="M70,20 Q60,40 70,60 Q80,80 70,100 Q60,120 70,140 Q80,160 70,180" stroke="#3b82f6" stroke-width="4" fill="none"/>
+          <line x1="50" y1="30" x2="70" y2="30" stroke="#6366f1" stroke-width="2"/>
+          <line x1="50" y1="50" x2="70" y2="50" stroke="#6366f1" stroke-width="2"/>
+          <circle cx="140" cy="100" r="40" stroke="#10b981" stroke-width="3" fill="none"/>
+        </svg>
+        
+        <h1 class="z-1">📚 Test z biologie</h1>
+        
+        <div class="info-box z-1">
+          <p>Celkem v databázi: <strong id="totalQuestions">215 otázek</strong> z 11 sekcí</p>
+        </div>
+
+        <div class="flex-center z-1">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <label>Počet otázek:</label>
+            <input type="number" id="questionCount" value="30" min="1" max="215">
+          </div>
+          
+          <button class="btn btn-primary" onclick="generateQuiz()">
+            🧬 Vygenerovat test
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="studentForm" class="card hidden">
+      <h2>👤 Informace o studentovi</h2>
+      
+      <div class="form-group">
+        <label>Jméno a příjmení:</label>
+        <input type="text" id="studentName" placeholder="Jan Novák">
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Třída:</label>
+          <input type="text" id="studentClass" placeholder="3.A">
+        </div>
+        
+        <div class="form-group">
+          <label>Datum:</label>
+          <input type="date" id="testDate">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Email učitele:</label>
+        <input type="email" id="teacherEmail" placeholder="ucitel@skola.cz">
+      </div>
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <div id="downloadSection" class="card-small hidden" style="background: white; margin-bottom: 16px;">
+      <div class="instruction-box">
+        <p>
+          📧 <strong>Jak odeslat test:</strong><br>
+          1. Klikni na "Stáhnout test"<br>
+          2. Otevři svůj email<br>
+          3. Napiš email na: <strong id="emailDisplay">zadej email učitele výše</strong><br>
+          4. Přilož stažený soubor<br>
+          5. Odešli email
+        </p>
+      </div>
+      
+      <div class="center">
+        <button class="btn btn-success" id="downloadBtn" onclick="downloadTest()">
+          ⬇️ Stáhnout test
+        </button>
+      </div>
+    </div>
+
+    <div id="warningSection" class="hidden">
+      <div class="warning">
+        <p>⚠️ Pro stažení testu vyplň jméno a třídu</p>
+      </div>
+    </div>
+
+    <div id="emptyState" class="card center" style="padding: 48px;">
+      <p style="color: #9ca3af; font-size: 18px;">
+        Klikni na tlačítko výše pro vygenerování testu
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const questionsDatabase = {
+      "Opěrná soustava": [
+        { q: "Opěrná soustava", a: "soubor kostí, chrupavek a vazů, které tvoří oporu těla a chrání orgány" },
+        { q: "Skelet", a: "kostra -- soubor všech kostí lidského těla (cca 206)" },
+        { q: "Kloub", a: "pohyblivé spojení dvou kostí" },
+        { q: "Kloubní chrupavka", a: "hladký povrch kostí v kloubu, umožňuje hladký pohyb" },
+        { q: "Vazy", a: "pásy vaziva spojující kosti mezi sebou, zpevňují kloub" },
+        { q: "Šlachy", a: "spojují svaly s kostmi" },
+        { q: "Lebka", a: "kostěná schránka chránící mozek a smyslové orgány" },
+        { q: "Páteř", a: "osa těla složená z obratlů, umožňuje vzpřímené držení těla" },
+        { q: "Obratel", a: "základní kostní jednotka páteře, skládá se z těla, oblouku a výběžků" },
+        { q: "Páteřní kanál", a: "otvor v obratlech, jímž prochází mícha" },
+        { q: "Meziobratlové ploténky", a: "chrupavčité destičky mezi obratli, tlumí nárazy" },
+        { q: "Hrudník", a: "kostěný rámec tvořený hrudní kostí, žebry a hrudní páteří" },
+        { q: "Kostní dřeň", a: "tkáň uvnitř kostí -- červená (krvetvorba), žlutá (tuková)" },
+        { q: "Krvetvorba (hemopoeza)", a: "proces tvorby krvinek v červené kostní dřeni" },
+        { q: "Horní končetina", a: "pažní kost, loketní kost, vřetenní kost, zápěstní a záprstní kůstky, články prstů" },
+        { q: "Dolní končetina", a: "stehenní kost, čéška, holenní kost, lýtková kost, zánártní a nártní kůstky, články prstů" }
+      ],
+      "Svalová soustava": [
+        { q: "Svalová tkáň", a: "tkáň tvořená buňkami schopnými stahu, umožňuje pohyb těla a orgánů" },
+        { q: "Příčně pruhované svalstvo", a: "svalstvo ovládané vůlí, tvoří kosterní svaly" },
+        { q: "Srdeční svalstvo", a: "zvláštní typ příčně pruhovaného svalstva, tvoří srdce, není ovládáno vůlí" },
+        { q: "Hladké svalstvo", a: "svalstvo vnitřních orgánů, není ovládáno vůlí" },
+        { q: "Sval", a: "orgán schopný aktivního stahu, tvořený svalovou tkání" },
+        { q: "Svalové vlákno", a: "základní stavební a funkční jednotka kosterního svalu" },
+        { q: "Myofibrily", a: "vlákénka uvnitř svalového vlákna, tvořená aktinem a myosinem" },
+        { q: "Nervosvalová ploténka", a: "místo kontaktu motorického nervu se svalovým vláknem, přenáší vzruch" },
+        { q: "Synergista", a: "sval, který pomáhá hlavnímu svalu při pohybu" },
+        { q: "Antagonista", a: "sval působící opačně než jiný sval" },
+        { q: "Flexor", a: "ohýbač -- sval, který umožňuje ohyb kloubu" },
+        { q: "Extenzor", a: "natahovač -- sval, který umožňuje natažení kloubu" },
+        { q: "Svaly horní končetiny", a: "svaly předloktí, biceps, triceps, deltový" },
+        { q: "Svaly dolní končetiny", a: "čtyřhlavý stehenní, svaly zadní strany stehna, trojhlavý lýtkový, svaly nohy" },
+        { q: "Svaly hlavy a trupu", a: "trapézový sval, široký zádový, svaly mezilopatkové, čelní, žvýkací, spánkové, okcipitální, kruhový ústní svěrač" }
+      ],
+      "Krevní a lymfatická soustava": [
+        { q: "Homeostáza", a: "schopnost těla udržovat stabilní vnitřní prostředí" },
+        { q: "Krev", a: "tekutá pojivová tkáň přenášející kyslík, živiny a odpadní látky" },
+        { q: "Lymfa", a: "tekutina cirkulující v lymfatické soustavě, podílí se na obraně organismu a transportu látek" },
+        { q: "Lymfatické cévy", a: "cévy vedoucí lymfu z tkání zpět do žilního řečiště" },
+        { q: "Lymfatické uzliny", a: "filtry lymfatického systému, místo tvorby lymfocytů" },
+        { q: "Hematologie", a: "vědní obor zabývající se studiem krve a krevotvorných orgánů" },
+        { q: "Glykemie", a: "koncentrace glukózy v krvi" },
+        { q: "Krevní obraz", a: "laboratorní vyšetření počtu a poměru krevních buněk" },
+        { q: "Erytrocyty", a: "červené krvinky přenášející kyslík a část oxidu uhličitého" },
+        { q: "Leukocyty", a: "bílé krvinky podílející se na imunitní obraně organismu" },
+        { q: "Trombocyty", a: "krevní destičky podílející se na srážení krve" },
+        { q: "Hemoglobin", a: "červené barvivo z hemu a globinu, váže a přenáší kyslík" },
+        { q: "Hematokryt", a: "procentuální zastoupení červených krvinek v krvi" },
+        { q: "Sedimentace", a: "usazování erytrocytů ve zkumavce, indikátor zánětu" },
+        { q: "Diapedéza", a: "schopnost leukocytů prostupovat cévní stěnou do tkání" },
+        { q: "Hemostáze", a: "soubor procesů zajišťujících zastavení krvácení" },
+        { q: "Embolie", a: "ucpání cévy trombem nebo jinou látkou přenesenou krví" },
+        { q: "Anémie", a: "snížený počet erytrocytů nebo hemoglobinu, způsobující únavu a slabost" },
+        { q: "Leukémie", a: "zhoubné onemocnění krvetvorby charakterizované nadprodukcí leukocytů" }
+      ],
+      "Oběhová soustava": [
+        { q: "Srdce", a: "dutý svalový orgán pumpující krev do těla" },
+        { q: "Myokard", a: "svalovina srdeční stěny, umožňuje stahy srdce" },
+        { q: "Srdeční síně a komory", a: "síně přijímají krev, komory ji vypuzují" },
+        { q: "Chlopně", a: "zabraňují zpětnému toku krve (dvojcípá a trojcípá)" },
+        { q: "Aorta", a: "hlavní tepna vedoucí krev ze srdce do těla" },
+        { q: "Plicnice", a: "vede odkysličenou krev do plic" },
+        { q: "Systola", a: "stah srdečních svalů" },
+        { q: "Diastola", a: "uvolnění srdečních svalů" },
+        { q: "Koronární tepny", a: "zásobují srdce krví" },
+        { q: "Malý oběh", a: "krevní oběh mezi srdcem a plícemi" },
+        { q: "Velký oběh", a: "krevní oběh mezi srdcem a tělem" },
+        { q: "Horní a dolní dutá žíla", a: "přivádějí odkysličenou krev do pravé síně" },
+        { q: "EKG", a: "záznam elektrické aktivity srdce" },
+        { q: "Tepny", a: "cévy vedoucí krev ze srdce, mají silnou svalovou stěnu" },
+        { q: "Žíly", a: "cévy vedoucí krev do srdce, mají chlopně proti zpětnému toku" }
+      ],
+      "Trávicí soustava": [
+        { q: "Trávicí soustava", a: "soubor orgánů zajišťujících příjem, trávení a vstřebávání potravy" },
+        { q: "Trávicí trubice", a: "dutý orgán od úst po konečník" },
+        { q: "Dutina ústní", a: "místo příjmu a prvotního zpracování potravy" },
+        { q: "Jazyk", a: "orgán pro manipulaci s potravou a chuť" },
+        { q: "Zub", a: "orgán pro mechanické zpracování potravy" },
+        { q: "Stavba zubu", a: "korunka, krček, kořen, zubovina, sklovina, dřeň, cement, zubní jamka" },
+        { q: "Typy zubů", a: "řezáky, špičáky, třenové zuby, stoličky" },
+        { q: "Žaludek", a: "vakovitý orgán mechanicky a chemicky zpracovávající potravu" },
+        { q: "Tenké střevo", a: "hlavní místo trávení a vstřebávání živin" },
+        { q: "Tlusté střevo", a: "vstřebává vodu a soli, tvoří stolici" },
+        { q: "Játra", a: "největší žláza v lidském těle, hlavní centrum metabolických procesů a detoxikace" },
+        { q: "Enzymy", a: "pepsin, trypsin, chymotrypsin, amylázy, lipázy -- štěpí bílkoviny, polysacharidy a tuky" },
+        { q: "Peristaltické pohyby", a: "rytmické stahy posunující potravu" },
+        { q: "Vstřebávání", a: "přechod živin z trávicí trubice do krve nebo lymfy" },
+        { q: "Dvanáctník", a: "první úsek tenkého střeva" },
+        { q: "Slinivka břišní", a: "produkuje trávicí enzymy a hormony" },
+        { q: "Defekace", a: "vyprazdňování" }
+      ],
+      "Vylučovací soustava": [
+        { q: "Vylučovací soustava", a: "soustava orgánů tvořících a odvádějících moč" },
+        { q: "Ledviny", a: "párový orgán filtrující krev a tvořící moč" },
+        { q: "Nefron", a: "základní funkční jednotka ledviny" },
+        { q: "Glomerulus", a: "síť vlásečnic v nefronu, kde probíhá filtrace krve" },
+        { q: "Bowmanův váček", a: "část nefronu obklopující glomerulus, zachycuje primární moč" },
+        { q: "Tubulus", a: "část nefronu, kde probíhá zpětné vstřebávání látek" },
+        { q: "Primární moč", a: "prvotní filtrát krve obsahující vodu, soli, glukózu i odpadní látky" },
+        { q: "Sekundární moč", a: "konečný produkt po zpětném vstřebávání užitečných látek" },
+        { q: "Močovod", a: "trubice vedoucí moč z ledvin do močového měchýře" },
+        { q: "Močový měchýř", a: "dutý orgán dočasně skladující moč" },
+        { q: "Močová trubice", a: "odvádí moč ven z těla" },
+        { q: "Antidiuretický hormon", a: "hormon z hypotalamu, zadržuje vodu v těle" },
+        { q: "Erytropoetin", a: "hormon ledvin podporující tvorbu červených krvinek" },
+        { q: "Ledvinové kameny", a: "ztvrdlé usazeniny solí v močových cestách" },
+        { q: "Močovina", a: "hlavní konečný produkt látkové přeměny bílkovin" },
+        { q: "Kyselina močová", a: "konečný produkt přeměny purinů" },
+        { q: "Kreatinin", a: "odpadní látka ze svalového metabolismu" },
+        { q: "Dialýza", a: "umělé čištění krve při selhání ledvin" },
+        { q: "Glomerulonefritida", a: "zánět ledvinových klubíček" },
+        { q: "Inkontinence", a: "neschopnost zadržet moč" }
+      ],
+      "Smyslová soustava": [
+        { q: "Receptor", a: "buněčná struktura reagující na podněty" },
+        { q: "Oko a stavba oka", a: "orgán zraku, převádí světlo na nervové impulsy" },
+        { q: "Sítnice", a: "obsahuje fotoreceptory, místo vzniku zrakových vjemů" },
+        { q: "Tyčinky", a: "fotoreceptory citlivé na nízkou intenzitu světla" },
+        { q: "Čípky", a: "fotoreceptory pro barevné vidění" },
+        { q: "Žlutá skvrna", a: "místo na sítnici s největší koncentrací čípků" },
+        { q: "Slepá skvrna", a: "místo vstupu zrakového nervu do oka, bez fotoreceptorů" },
+        { q: "Zrakový nerv", a: "přenáší vizuální informace do mozku" },
+        { q: "Binokulární vidění", a: "vidění oběma očima, prostorové vnímání" },
+        { q: "Okohybné svaly", a: "umožňují pohyb oka" },
+        { q: "Ucho a stavba ucha", a: "orgán sluchu a rovnováhy" },
+        { q: "Bubínek", a: "blána oddělující vnější a střední ucho" },
+        { q: "Sluchové kůstky", a: "kladívko, kovadlinka a třmínek ve středním uchu" },
+        { q: "Perilymfa a endolymfa", a: "tekutiny uvnitř labyrintu" },
+        { q: "Hlemýžď", a: "převádí zvuk na nervové impulsy" },
+        { q: "Cortiho orgán", a: "smyslový orgán sluchu uvnitř hlemýždě" },
+        { q: "Sluchový nerv", a: "přenáší signály z ucha do mozku" },
+        { q: "Statokinetické ústrojí", a: "udržuje rovnováhu těla" },
+        { q: "Polokruhovité kanálky", a: "část vnitřního ucha registrující rotační pohyby" },
+        { q: "Stavba kůže", a: "pokožka, škára a podkoží" },
+        { q: "Chuťové pohárky", a: "drobné struktury na jazyku obsahující chuťové buňky" }
+      ],
+      "Pohlavní rozmnožování": [
+        { q: "Pohlavní rozmnožování", a: "rozmnožování zahrnující splynutí dvou pohlavních buněk" },
+        { q: "Pohlavní buňka", a: "specializovaná buňka pro pohlavní rozmnožování" },
+        { q: "Spermie", a: "mužská pohlavní buňka schopná oplodnění" },
+        { q: "Vajíčko", a: "ženská pohlavní buňka schopná oplodnění" },
+        { q: "Folikul", a: "struktura ve vaječníku, kde dozrává vajíčko" },
+        { q: "Oplození", a: "splynutí spermie a vajíčka, vznik zygoty" },
+        { q: "Zygota", a: "první buňka vzniklá splynutím gamet" },
+        { q: "Zárodek", a: "rané stadium vývoje organismu před plodem" },
+        { q: "Plod", a: "pokročilé stadium vývoje organismu v děloze" },
+        { q: "Meióza", a: "dělení pohlavních buněk s redukcí počtu chromozomů" },
+        { q: "Pohlavní chromozomy", a: "určují pohlaví jedince" },
+        { q: "Pyj", a: "mužský pohlavní orgán" },
+        { q: "Varlata", a: "mužské pohlavní žlázy produkující spermie" },
+        { q: "Vaječníky", a: "ženské pohlavní orgány produkující vajíčka" },
+        { q: "Vejcovody", a: "trubice vedoucí vajíčko z vaječníku do dělohy" },
+        { q: "Děloha", a: "svalový orgán, kde se vyvíjí zárodek a plod" },
+        { q: "Ovulace", a: "uvolnění zralého vajíčka z vaječníku" },
+        { q: "Menstruační cyklus", a: "periodické hormonální změny u ženy" },
+        { q: "Placenta", a: "orgán vyživující plod" },
+        { q: "Pupečník", a: "propojuje plod s placentou" },
+        { q: "Porod", a: "proces vypuzení plodu z dělohy" }
+      ],
+      "Endokrinní soustava": [
+        { q: "Endokrinní žláza", a: "vylučuje hormony přímo do krve" },
+        { q: "Endokrinní soustava", a: "systém žláz řídící organismus pomocí hormonů" },
+        { q: "Hormon", a: "chemická látka ovlivňující činnost buněk" },
+        { q: "Hypotalamus", a: "propojení s hypofýzou, hlavní centrum řízení hormonů" },
+        { q: "Hypofýza", a: "hlavní žláza endokrinní soustavy" },
+        { q: "Adenohypofýza", a: "produkuje tropní a růstové hormony" },
+        { q: "Růstový hormon", a: "podporuje růst a vývoj" },
+        { q: "FSH", a: "podporuje zrání pohlavních buněk" },
+        { q: "LH", a: "řídí ovulaci a tvorbu pohlavních hormonů" },
+        { q: "Neurohypofýza", a: "zadní lalok hypofýzy, uvolňuje vazopresin a oxytocin" },
+        { q: "Vazopresin", a: "snižuje vylučování vody v ledvinách" },
+        { q: "Oxytocin", a: "podporuje stahy dělohy a vylučování mléka" },
+        { q: "Štítná žláza", a: "žláza produkující hormony řídící metabolismus" },
+        { q: "Tyroxin", a: "hormon štítné žlázy ovlivňující metabolismus" },
+        { q: "Příštítná tělíska", a: "řídí hladinu vápníku" },
+        { q: "Nadledviny", a: "žlázy na ledvinách, tvoří hormony" },
+        { q: "Adrenalin", a: "hormon připravující tělo na stresovou reakci" },
+        { q: "Kortizol", a: "hormon řídící metabolismus a stresovou odpověď" },
+        { q: "Pankreas", a: "žláza s vnitřní sekrecí" },
+        { q: "Inzulin", a: "hormon snižující hladinu glukózy v krvi" },
+        { q: "Glukagon", a: "hormon zvyšující hladinu glukózy v krvi" }
+      ],
+      "Nervová soustava": [
+        { q: "Nervová soustava", a: "řídí a koordinuje činnost organismu" },
+        { q: "CNS", a: "mozek a mícha" },
+        { q: "Periferní nervový systém", a: "nervy spojující CNS s tělem" },
+        { q: "Mozek", a: "řídicí centrum těla" },
+        { q: "Koncový mozek", a: "zodpovídá za myšlení, paměť, vědomí" },
+        { q: "Mozkový kmen", a: "řídí základní životní funkce" },
+        { q: "Mozeček", a: "koordinuje pohyby a udržuje rovnováhu" },
+        { q: "Mícha", a: "vede vzruchy mezi mozkem a tělem" },
+        { q: "Neuron", a: "základní jednotka nervové soustavy" },
+        { q: "Dendrit", a: "přijímá vzruchy od jiných buněk" },
+        { q: "Axon", a: "vede vzruch od těla neuronu dál" },
+        { q: "Myelinová pochva", a: "izolační vrstva kolem axonu" },
+        { q: "Synapse", a: "místo spojení dvou neuronů" },
+        { q: "Neurotransmiter", a: "chemická látka přenášející vzruch" },
+        { q: "Reflex", a: "automatická reakce těla na podnět" },
+        { q: "Reflexní oblouk", a: "dráha nervového vzruchu při reflexu" },
+        { q: "Autonomní nervový systém", a: "řídí činnost orgánů nezávisle na vůli" },
+        { q: "Sympatikus", a: "aktivuje tělo při stresu" },
+        { q: "Parasympatikus", a: "uklidňuje tělo, podporuje trávení" },
+        { q: "Akční potenciál", a: "krátký elektrický impuls" }
+      ],
+      "Genetika": [
+        { q: "Genetika", a: "věda o dědičnosti a proměnlivosti" },
+        { q: "Gen", a: "úsek DNA kódující jednu vlastnost" },
+        { q: "Alela", a: "jedna z variant genu" },
+        { q: "Homozygot", a: "jedinec s dvěma stejnými alelami" },
+        { q: "Heterozygot", a: "jedinec s dvěma odlišnými alelami" },
+        { q: "Genotyp", a: "soubor všech genů jedince" },
+        { q: "Fenotyp", a: "soubor všech pozorovatelných znaků" },
+        { q: "Chromozom", a: "struktura z DNA a bílkovin" },
+        { q: "Autosom", a: "chromozom, který neurčuje pohlaví" },
+        { q: "Gonozomy", a: "chromozomy určující pohlaví" },
+        { q: "Mitóza", a: "dělení somatických buněk" },
+        { q: "Meióza", a: "dělení pohlavních buněk" },
+        { q: "Dědičnost", a: "schopnost organismů předávat znaky potomstvu" },
+        { q: "Mutace", a: "náhlá změna genetické informace" },
+        { q: "Křížení", a: "kombinace genotypů rodičů" },
+        { q: "DNA", a: "nositel genetické informace" },
+        { q: "RNA", a: "molekula přenosu genetické informace" },
+        { q: "Replikace", a: "proces zdvojení DNA" },
+        { q: "Transkripce", a: "přepis genetické informace z DNA na RNA" },
+        { q: "Translace", a: "překlad genetické informace do podoby bílkovin" }
+      ]
+    };
+
+    let selectedQuestions = [];
+    let userAnswers = {};
+
+    // Nastavení dnešního data
+    document.getElementById('testDate').value = new Date().toISOString().split('T')[0];
+
+    // Event listeners
+    document.getElementById('studentName').addEventListener('input', updateDownloadButton);
+    document.getElementById('studentClass').addEventListener('input', updateDownloadButton);
+    document.getElementById('teacherEmail').addEventListener('input', updateEmailDisplay);
+
+    function generateQuiz() {
+      const numberOfQuestions = parseInt(document.getElementById('questionCount').value) || 30;
+      const sections = Object.keys(questionsDatabase);
+      const totalSections = sections.length;
+      const questionsPerSection = Math.floor(numberOfQuestions / totalSections);
+      const remainder = numberOfQuestions % totalSections;
+
+      selectedQuestions = [];
+
+      sections.forEach((section, index) => {
+        const sectionQuestions = [...questionsDatabase[section]];
+        const count = questionsPerSection + (index < remainder ? 1 : 0);
+        
+        // Shuffle
+        for (let i = sectionQuestions.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [sectionQuestions[i], sectionQuestions[j]] = [sectionQuestions[j], sectionQuestions[i]];
+        }
+        
+        const selectedFromSection = sectionQuestions.slice(0, Math.min(count, sectionQuestions.length));
+        selectedFromSection.forEach(q => {
+          selectedQuestions.push({ ...q, section });
+        });
+      });
+
+      // Final shuffle
+      for (let i = selectedQuestions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [selectedQuestions[i], selectedQuestions[j]] = [selectedQuestions[j], selectedQuestions[i]];
+      }
+
+      userAnswers = {};
+      renderQuestions();
+      
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('studentForm').classList.remove('hidden');
+      document.getElementById('downloadSection').classList.remove('hidden');
+      updateDownloadButton();
+    }
+
+    function renderQuestions() {
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = '';
+
+      selectedQuestions.forEach((item, index) => {
+        const questionCard = document.createElement('div');
+        questionCard.className = 'question-card';
+        questionCard.innerHTML = `
+          <div class="question-header">
+            <span class="question-number">${index + 1}</span>
+            <div style="flex: 1;">
+              <div class="question-title">${item.q}</div>
+              <div class="question-section">(${item.section})</div>
+            </div>
+          </div>
+          <div class="answer-area">
+            <label class="answer-label">Odpověď:</label>
+            <textarea 
+              id="answer-${index}" 
+              placeholder="Napiš zde svou odpověď..."
+              oninput="updateAnswer(${index}, this.value)"
+            ></textarea>
+          </div>
+        `;
+        container.appendChild(questionCard);
+      });
+    }
+
+    function updateAnswer(index, value) {
+      userAnswers[index] = value;
+    }
+
+    function updateDownloadButton() {
+      const name = document.getElementById('studentName').value.trim();
+      const studentClass = document.getElementById('studentClass').value.trim();
+      const downloadBtn = document.getElementById('downloadBtn');
+      const warningSection = document.getElementById('warningSection');
+
+      if (name && studentClass) {
+        downloadBtn.disabled = false;
+        warningSection.classList.add('hidden');
+      } else {
+        downloadBtn.disabled = true;
+        warningSection.classList.remove('hidden');
+      }
+    }
+
+    function updateEmailDisplay() {
+      const email = document.getElementById('teacherEmail').value.trim();
+      document.getElementById('emailDisplay').textContent = email || 'zadej email učitele výše';
+    }
+
+    function downloadTest() {
+      const studentName = document.getElementById('studentName').value;
+      const studentClass = document.getElementById('studentClass').value;
+      const testDate = document.getElementById('testDate').value;
+
+      let content = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; font-size: 10pt; line-height: 1.2; margin: 0.5cm; }
+    h1 { text-align: center; font-size: 16pt; margin: 5px 0; }
+    .header { border-top: 2px solid black; border-bottom: 2px solid black; padding: 5px 0; margin: 8px 0 12px 0; }
+    .header p { margin: 2px 0; }
+    .question { border-bottom: 1px solid #ccc; padding: 5px 0; margin: 0; }
+    .question-text { font-weight: bold; margin: 0 0 3px 0; }
+    .answer-field { min-height: 2.4em; border: 1px solid #ddd; padding: 3px; background: #fafafa; margin: 0 0 3px 0; }
+    .points { text-align: right; font-weight: bold; color: #c00; font-size: 9pt; margin: 0; }
+    .summary { border: 2px solid black; padding: 12px; margin: 15px 0 10px 0; }
+    .summary h2 { font-size: 14pt; margin: 0 0 8px 0; }
+    .summary p { margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <h1>TEST Z BIOLOGIE</h1>
+  <div class="header">
+    <p><strong>Jméno a příjmení:</strong> ${studentName}</p>
+    <p><strong>Třída:</strong> ${studentClass}</p>
+    <p><strong>Datum:</strong> ${testDate}</p>
+  </div>`;
+
+      selectedQuestions.forEach((item, index) => {
+        const answer = userAnswers[index] || '';
+        content += `
+  <div class="question">
+    <p class="question-text">${index + 1}. ${item.q}</p>
+    <div class="answer-field">${answer || '&nbsp;'}</div>
+    <p class="points">Bodů: _____</p>
+  </div>`;
+      });
+
+      content += `
+  <div class="summary">
+    <h2>HODNOCENÍ</h2>
+    <p><strong>Celkem bodů:</strong> __________</p>
+    <p><strong>Maximální počet bodů:</strong> __________</p>
+    <p><strong>Známka:</strong> __________</p>
+    <p><strong>Komentář učitele:</strong></p>
+    <div style="border: 1px solid #ccc; min-height: 50px; margin-top: 6px; background: #fafafa;"></div>
+  </div>
+</body>
+</html>`;
+
+      const blob = new Blob([content], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'test_biologie_' + studentName.replace(/\s+/g, '_') + '_' + testDate + '.doc';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
